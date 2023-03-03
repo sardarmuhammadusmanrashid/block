@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.0;
+
+contract user{
+struct register{
+    string name;
+    string email;
+    string password;
+    string img;
+    address uaddress;
+}
+uint id;
+register[] rg;
+mapping(address=>bool) already;
+mapping(uint=>register)pb;
+mapping(address=>register)pkk;
+mapping(address=>uint)pl;
+
+function registerUser(string memory name,string memory email,string memory password,string memory img)public{
+    require(already[msg.sender]==false,"you already registered");
+    register memory r=pb[id];
+
+    r.name=name;
+    r.email=email;
+    r.password=password;
+    r.uaddress=msg.sender;
+    r.img=img;
+    pl[msg.sender]=id;
+    id+=1;
+    already[msg.sender]=true;
+    rg.push(r);
+
+
+}
+
+
+
+
+function getuserdetails() public view returns(register memory){
+  require(already[msg.sender]==true,"sorry data not found");
+    uint k=pl[msg.sender];
+    return rg[k];
+}
+function getuserupdate(string memory name,string memory email,string memory password,string memory img)public{
+    uint kt=pl[msg.sender];
+    register storage r=rg[kt];
+
+    r.name=name;
+    r.email=email;
+    r.password=password;
+    r.uaddress=msg.sender;
+    r.img=img;
+   
+}
+
+
+
+    
+ 
+function login(string memory e,string memory p) public view returns(bool){
+      require(already[msg.sender]==true,"you not registered");
+     
+    register storage r=rg[pl[msg.sender]];
+    require( keccak256(abi.encodePacked(r.email)) == keccak256(abi.encodePacked(e)),"invalid email");
+    require( keccak256(abi.encodePacked(r.password)) == keccak256(abi.encodePacked(p)),"invalid password");
+     
+      
+
+    return true;
+
+}
+
+
+
+
+}
